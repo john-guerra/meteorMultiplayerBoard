@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {createContainer} from "meteor/react-meteor-data";
 
-
 import InputPlayer from "./InputPlayer.jsx";
 import Board from "./Board.jsx";
 import Controls from "./Controls.jsx";
@@ -33,7 +32,7 @@ class App extends Component {
     let player = Players.findOne({name:name});
 
     if(player===undefined) {
-      let player = {
+      player = {
         name: name,
         x: Math.random()*this.width,
         y: Math.random()*this.height
@@ -97,7 +96,9 @@ App.propTypes = {
   players: PropTypes.array.isRequired
 };
 
-export default createContainer(() => {
+
+
+export default AppContainer = createContainer((props) => {
   return {
     players: Players.find({}).fetch()
   };
