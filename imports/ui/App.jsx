@@ -1,12 +1,17 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {createContainer} from "meteor/react-meteor-data";
+import { Meteor } from "meteor/meteor";
 
 import InputPlayer from "./InputPlayer.jsx";
 import Board from "./Board.jsx";
 import Controls from "./Controls.jsx";
+import AccountUIWrapper from "./AccountUIWrapper.jsx";
+
+
 
 import { Players } from "../api/players.js";
+
 
 class App extends Component {
   constructor(props) {
@@ -76,12 +81,27 @@ class App extends Component {
     );
   }
 
+  componentWillUpdate() {
+    if (Meteor.user()) {
+      if (this.state.currentPlayer &&
+        Meteor.user().username=== this.state.currentPlayer.name)
+        return;
+      this.onEnterPlayer(Meteor.user().username);
+    }
+  }
+
   render() {
     return (
     <div className="App">
-      {this.state.currentPlayer !== null ?
+
+      <div>
+        <AccountUIWrapper/>
+      </div>
+
+      {Meteor.user() !== null ?
         <Controls onClick={this.movePlayer}></Controls> :
-        <InputPlayer onClick = {this.onEnterPlayer}></InputPlayer>
+        <div> Please sig in</div>
+        // <InputPlayer onClick = {this.onEnterPlayer}></InputPlayer>
       }
       <Board
         width={this.width}
@@ -93,14 +113,16 @@ class App extends Component {
 }
 
 App.propTypes = {
-  players: PropTypes.array.isRequired
+  players: PropTypes.array.isRequired,
+  user: PropTypes.object
 };
 
 
 
 export default AppContainer = createContainer((props) => {
   return {
-    players: Players.find({}).fetch()
+    players: Players.find({}).fetch(),
+    user: Meteor.user()
   };
 }, App);
 
