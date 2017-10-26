@@ -18,6 +18,7 @@ class Board extends Component {
 
   redraw(newProps) {
     console.log("redraw");
+    console.log(newProps);
     let ctx = this.canvas.getContext("2d");
 
     ctx.clearRect(0, 0, newProps.width, newProps.height);

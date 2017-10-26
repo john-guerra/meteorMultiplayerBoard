@@ -33,17 +33,19 @@ class App extends Component {
   }
 
   onEnterPlayer(name) {
-    console.log(name);
+    console.log("Finding player="+name);
+    Meteor.subscribe("players");
     let player = Players.findOne({name:name});
 
     if(player===undefined) {
-      player = {
-        name: name,
-        x: Math.random()*this.width,
-        y: Math.random()*this.height
-      };
-      player._id = Players.insert(player);
-
+      // player = {
+      //   name: name,
+      //   x: Math.random()*this.width,
+      //   y: Math.random()*this.height
+      // };
+      // player._id = Players.insert(player);
+      Meteor.call("players.insert", Math.random()*this.width, Math.random()*this.height);
+      player = Players.findOne({name:name});
     }
 
     this.setState({
@@ -71,17 +73,20 @@ class App extends Component {
       x+=5;
       break;
     }
+    Meteor.call("players.update", x, y);
 
-    Players.update(this.state.currentPlayer._id,
-      {
-        name:player.name,
-        x: x,
-        y: y
-      }
-    );
+    // Players.update(this.state.currentPlayer._id,
+    //   {
+    //     name:player.name,
+    //     x: x,
+    //     y: y
+    //   }
+    // );
   }
 
   componentWillUpdate() {
+    console.log("update currentPlayer");
+    console.log(this.state.currentPlayer);
     if (Meteor.user()) {
       if (this.state.currentPlayer &&
         Meteor.user().username=== this.state.currentPlayer.name)
@@ -120,9 +125,12 @@ App.propTypes = {
 
 
 export default AppContainer = createContainer((props) => {
+  Meteor.subscribe("players");
+  // let currentPlayer = Players.findOne({name:Meteor.user().username});
   return {
     players: Players.find({}).fetch(),
-    user: Meteor.user()
+    user: Meteor.user(),
+    // currentPlayer: currentPlayer,
   };
 }, App);
 
