@@ -20,6 +20,3 @@ shell-server@0.2.4            # Server-side component of the `meteor shell` comm
 react-meteor-data
 accounts-ui
 accounts-password
-practicalmeteor:mocha
-xolvio:cleaner
-dburles:factory
